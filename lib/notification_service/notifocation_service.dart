@@ -131,7 +131,6 @@ class NotificationServices {
   DateTime scheduleDate = DateTime.now().add(Duration(seconds: 10));
 
   Future<void> scheduleNotificationInTimeZone() async {
-
     // Define androidNotificationDetails and darwinNotificationDetails here
     AndroidNotificationDetails androidNotificationDetails =
         AndroidNotificationDetails(
@@ -163,6 +162,44 @@ class NotificationServices {
       androidAllowWhileIdle: true,
       // payload: "notification-payload",
     );
+  }
+
+  Future scheduleNotification(
+      {int id = 0,
+      String? title,
+      String? body,
+      String? payLoad,
+      required DateTime scheduledNotificationDateTime}) async {
+    AndroidNotificationDetails androidNotificationDetails =
+        AndroidNotificationDetails(
+      'your_channel_id',
+      'your_channel_name',
+      channelDescription: 'your_channel_description',
+      importance: Importance.high,
+      priority: Priority.high,
+    );
+
+    const DarwinNotificationDetails darwinNotificationDetails =
+        DarwinNotificationDetails(
+      presentAlert: true,
+      presentBadge: true,
+      presentSound: true,
+    );
+
+    NotificationDetails notificationDetails = NotificationDetails(
+        android: androidNotificationDetails, iOS: darwinNotificationDetails);
+    return _flutterLocalNotificationsPlugin.zonedSchedule(
+        id,
+        title,
+        body,
+        tz.TZDateTime.from(
+          scheduledNotificationDateTime,
+          tz.local,
+        ),
+        await notificationDetails,
+        androidAllowWhileIdle: true,
+        uiLocalNotificationDateInterpretation:
+            UILocalNotificationDateInterpretation.wallClockTime);
   }
 
   //function to get device token on which we will send the notifications
@@ -236,7 +273,6 @@ class NotificationServices {
   //     40,  // 0 minutes
   //   );
 
-    
   //   // If the scheduled time has already passed for today, schedule it for tomorrow
   //   if (now.isAfter(scheduledDate)) {
   //     scheduledDate = scheduledDate.add(const Duration(days: 1));
