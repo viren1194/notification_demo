@@ -95,7 +95,6 @@ class NotificationServices {
       importance: Importance.max,
       showBadge: true,
       playSound: true,
-      // sound: const RawResourceAndroidNotificationSound('jetsons_doorbell')
     );
 
     AndroidNotificationDetails androidNotificationDetails =
@@ -106,10 +105,7 @@ class NotificationServices {
             priority: Priority.high,
             playSound: true,
             ticker: 'ticker',
-            sound: channel.sound
-            //     sound: RawResourceAndroidNotificationSound('jetsons_doorbell')
-            //  icon: largeIconPath
-            );
+            sound: channel.sound);
 
     const DarwinNotificationDetails darwinNotificationDetails =
         DarwinNotificationDetails(
@@ -128,50 +124,15 @@ class NotificationServices {
     });
   }
 
-  DateTime scheduleDate = DateTime.now().add(Duration(seconds: 10));
-
-  Future<void> scheduleNotificationInTimeZone() async {
-    // Define androidNotificationDetails and darwinNotificationDetails here
-    AndroidNotificationDetails androidNotificationDetails =
-        AndroidNotificationDetails(
-      'your_channel_id',
-      'your_channel_name',
-      channelDescription: 'your_channel_description',
-      importance: Importance.high,
-      priority: Priority.high,
-    );
-
-    const DarwinNotificationDetails darwinNotificationDetails =
-        DarwinNotificationDetails(
-      presentAlert: true,
-      presentBadge: true,
-      presentSound: true,
-    );
-
-    NotificationDetails notificationDetails = NotificationDetails(
-        android: androidNotificationDetails, iOS: darwinNotificationDetails);
-
-    await _flutterLocalNotificationsPlugin.zonedSchedule(
-      0,
-      "Sample Notification",
-      "This is a notification",
-      tz.TZDateTime.from(scheduleDate, tz.local),
-      notificationDetails,
-      uiLocalNotificationDateInterpretation:
-          UILocalNotificationDateInterpretation.absoluteTime,
-      androidAllowWhileIdle: true,
-      // payload: "notification-payload",
-    );
-  }
-
   Future scheduleNotification(
       {int id = 0,
       String? title,
       String? body,
       String? payLoad,
       required DateTime scheduledNotificationDateTime}) async {
+    tz.initializeTimeZones();
     AndroidNotificationDetails androidNotificationDetails =
-        AndroidNotificationDetails(
+        const AndroidNotificationDetails(
       'your_channel_id',
       'your_channel_name',
       channelDescription: 'your_channel_description',
@@ -188,6 +149,7 @@ class NotificationServices {
 
     NotificationDetails notificationDetails = NotificationDetails(
         android: androidNotificationDetails, iOS: darwinNotificationDetails);
+    // print("Local ===> ${tz.local}");
     return _flutterLocalNotificationsPlugin.zonedSchedule(
         id,
         title,
@@ -196,8 +158,8 @@ class NotificationServices {
           scheduledNotificationDateTime,
           tz.local,
         ),
-        await notificationDetails,
-        androidAllowWhileIdle: true,
+        notificationDetails,
+        androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
         uiLocalNotificationDateInterpretation:
             UILocalNotificationDateInterpretation.wallClockTime);
   }
@@ -252,63 +214,4 @@ class NotificationServices {
       sound: true,
     );
   }
-
-  //   Future<void> scheduleNotificationInTimeZone() async {
-  //   // Define androidNotificationDetails and darwinNotificationDetails here
-
-  //   // Initialize the time zone database
-  //   tz.initializeTimeZones();
-
-  //   // Get the user's local time zone
-  //   final String timeZoneName = tz.local.name;
-
-  //    // Calculate the next 9 PM in the user's time zone
-  //   final tz.TZDateTime now = tz.TZDateTime.now(tz.getLocation(timeZoneName));
-  //   tz.TZDateTime scheduledDate = tz.TZDateTime(
-  //     tz.getLocation(timeZoneName),
-  //     2023,
-  //     09,
-  //     27,
-  //     00, // 9 PM
-  //     40,  // 0 minutes
-  //   );
-
-  //   // If the scheduled time has already passed for today, schedule it for tomorrow
-  //   if (now.isAfter(scheduledDate)) {
-  //     scheduledDate = scheduledDate.add(const Duration(days: 1));
-  //   }
-  //    // Define the notification details
-  //   AndroidNotificationDetails androidNotificationDetails =
-  //       AndroidNotificationDetails(
-  //     'your_channel_id',
-  //     'your_channel_name',
-  //     channelDescription: 'your_channel_description',
-  //     importance: Importance.high,
-  //     priority: Priority.high,
-  //   );
-
-  //   const DarwinNotificationDetails darwinNotificationDetails =
-  //       DarwinNotificationDetails(
-  //     presentAlert: true,
-  //     presentBadge: true,
-  //     presentSound: true,
-  //   );
-
-  //   NotificationDetails notificationDetails = NotificationDetails(
-  //     android: androidNotificationDetails,
-  //     iOS: darwinNotificationDetails,
-  //   );
-
-  //     // Schedule the daily notification at 9 PM
-  //   await _flutterLocalNotificationsPlugin.zonedSchedule(
-  //     0,
-  //     "Daily Notification",
-  //     "This is your daily notification at 9 PM",
-  //     scheduledDate,
-  //     notificationDetails,
-  //     uiLocalNotificationDateInterpretation:
-  //         UILocalNotificationDateInterpretation.absoluteTime,
-  //     androidAllowWhileIdle: true,
-  //   );
-  // }
 }

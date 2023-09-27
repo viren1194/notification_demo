@@ -21,7 +21,6 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     notificationServices.requestNotificationPermission();
     notificationServices.forgroundMessage();
@@ -48,50 +47,43 @@ class _HomeScreenState extends State<HomeScreen> {
         child: Column(
           children: [
             TextButton(
-                onPressed: () {
-                  // send notification from one device to another
-                  notificationServices.getDeviceToken().then((value) async {
-                    var data = {
-                      'to': value.toString(),
-                      'notification': {
-                        'title': 'Testing Notifiaction',
-                        'body': 'A very good morning...!',
-                      },
-                      'data': {'type': 'msj', 'id': ' Hello world'}
-                    };
+              onPressed: () {
+             
+                notificationServices.getDeviceToken().then((value) async {
+                  var data = {
+                    'to': value.toString(),
+                    'notification': {
+                      'title': 'Testing Notifiaction',
+                      'body': 'A very good morning...!',
+                    },
+                    'data': {'type': 'msj', 'id': ' Hello world'}
+                  };
 
-                    await http.post(
-                        Uri.parse('https://fcm.googleapis.com/fcm/send'),
-                        body: jsonEncode(data),
-                        headers: {
-                          'Content-Type': 'application/json; charset=UTF-8',
-                          'Authorization':
-                              'key=AAAA_hnOFRQ:APA91bGyBWi1ZIMMJaogHcL4wqKGaHQKqK8qczCQDjgGuSXvEAnJzY8uGpT9gyBzWaZtzC7-8VjkXVLuPCwC_Tbo9gamqP7VczLFmKxea_pSQvqNlZtKSpHUJ7h0THLHThx495ZdapU_'
-                        }).then((value) {
-                      if (kDebugMode) {
-                        print(value.body.toString());
-                      }
-                    }).onError((error, stackTrace) {
-                      if (kDebugMode) {
-                        print(error);
-                      }
-                    });
+                  await http.post(
+                      Uri.parse('https://fcm.googleapis.com/fcm/send'),
+                      body: jsonEncode(data),
+                      headers: {
+                        'Content-Type': 'application/json; charset=UTF-8',
+                        'Authorization':
+                            'key=AAAA_hnOFRQ:APA91bGyBWi1ZIMMJaogHcL4wqKGaHQKqK8qczCQDjgGuSXvEAnJzY8uGpT9gyBzWaZtzC7-8VjkXVLuPCwC_Tbo9gamqP7VczLFmKxea_pSQvqNlZtKSpHUJ7h0THLHThx495ZdapU_'
+                      }).then((value) {
+                    if (kDebugMode) {
+                      print(value.body.toString());
+                    }
+                  }).onError((error, stackTrace) {
+                    if (kDebugMode) {
+                      print(error);
+                    }
                   });
-                },
-                child: Text('Send Notifications')),
-
-            //***************** */
-
-            TextButton(
-                onPressed: () async {
-                  await notificationServices.scheduleNotificationInTimeZone();
-                },
-                child: Text("TimeZone notifi...")),
+                });
+              },
+              child: const Text('Send Notifications'),
+            ),
 
             //*********************************** */
 
-            DatePickerTxt(),
-            ScheduleBtn(),
+            const DatePickerTxt(),
+            const ScheduleBtn(),
           ],
         ),
       ),
