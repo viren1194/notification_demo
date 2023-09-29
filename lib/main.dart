@@ -3,6 +3,7 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:push_notification/notification_service/notifocation_service.dart';
+import 'package:push_notification/view/dashboard.dart';
 import 'package:push_notification/view/home_screen.dart';
 import 'package:timezone/data/latest.dart' as tz;
 
@@ -38,7 +39,8 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: const HomeScreen(),
+      // home: const HomeScreen(),
+      home: Dashboard(),
     );
   }
 }
